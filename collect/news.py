@@ -7,13 +7,12 @@ import urllib.parse
 import json
 
 from konlpy.tag import Twitter
-from collections import Counter, defaultdict
-import time
+from collections import Counter
 
 client_id = naver.CLIENTID
 client_pw = naver.CLIENTPASSWORD
 
-def get_blog_page(query, display):
+def get_news_page(query, display):
     global news_count
 
     encode_query = urllib.parse.quote(query)
@@ -35,19 +34,18 @@ def get_blog_page(query, display):
         else:
             total_news_count = math.ceil(response_body_dict["total"] / int(display))
 
-            # http 오류가 안날 최대 개수 900
-            if total_news_count >= 900:
-                news_count = 900
+            if total_news_count >= 100:
+                news_count = 100
             else:
                 news_count = total_news_count
 
     return news_count
 
 
-def get_blog_content(query, idx, display):
+def get_news_content(query, idx, display):
     text = ""
     encode_query = urllib.parse.quote(query)
-    search_url = "https://openapi.naver.com/v1/search/blog?query=" + encode_query + \
+    search_url = "https://openapi.naver.com/v1/search/news?query=" + encode_query + \
         "&start=" + str(idx) + "&display=" + str(display)
     request = urllib.request.Request(search_url)
 
@@ -61,7 +59,7 @@ def get_blog_content(query, idx, display):
         response_body_dict = json.loads(response_body.decode("utf-8"))
         contents = response_body_dict["items"]
         for content in contents:
-            print(content["postdate"])
+            print(content["pubDate"])
             text += content["title"] + " " + content["description"]
     return text
 
@@ -74,59 +72,30 @@ def count_nouns(txt):
 
     count = Counter(processed)
     # 빈도가 높은 max_count 이상 명사 추출
-    max_count = 26
+    max_count = 20
 
-    # 가장 갯수가 많은 것은 query
-    for n, c in count.most_common(max_count)[1:]:
+    for n, c in count.most_common(max_count):
         all_contents[n] = c
 
     return all_contents
 
-def save_json(query, content):
-    import os
-    from time import localtime, strftime, time
-    import errno
-
-    data_dict = {
-        "query": query,
-        "item": content
-    }
-    path = "./data/blog_data"
-
-    tm = localtime(time())
-    today = strftime("%Y-%m-%d", tm)
-    # path = "./data/blog_data/" + today
-    #
-    # try:
-    #     if not os.path.isdir(path):
-    #         os.mkdir(path)
-    # except OSError as e:
-    #     if e.errno != errno.EEXIST:
-    #         print("Failed to create")
-    #         raise
-
-
-    with open(path + "/{}-{}.json".format(today, query), "w") as f:
-        json.dump(data_dict, f, indent=4, ensure_ascii=False)
-
-
 
 if __name__ == '__main__':
-    query = "남해"
+    query = "곡성"
     display = 100
     start = 1
 
-    page_count = get_blog_page(query, display)
-    print(page_count)
+    # page_count = get_news_page(query, display)
+    # print(page_count)
 
     t = Twitter()
     all_contents = {}
     all_text = ""
-    for start_idx in range(start, page_count + 1, display):
+    # page_count + 1
+    for start_idx in range(start, 901, display):
         print(start_idx)
-        all_text += get_blog_content(query, start_idx, display) + " "
-        time.sleep(0.1)
+        all_text += get_news_content(query, start_idx, display) + " "
+
 
     print(count_nouns(all_text))
-    save_json(query, all_contents)
 
