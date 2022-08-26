@@ -79,7 +79,8 @@ def push_elasticsearch(data, idx):
 
 
 if __name__ == '__main__':
-    query = "곡성군"
+    query = "충청남도"
+    index_name = "chungnam"
     display = 100
     start = 1
 
@@ -93,7 +94,7 @@ if __name__ == '__main__':
     for start_idx in range(start, page_count + 1, display):
         print(start_idx)
         contents = get_blog_content(query, start_idx, display)
-        push_elasticsearch(contents, "test")
+        push_elasticsearch(contents, index_name)
 
     # save_json(query, all_contents)
 

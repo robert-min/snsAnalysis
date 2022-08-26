@@ -2,6 +2,7 @@ import json
 from konlpy.tag import Twitter
 from collections import Counter
 import elasticsearch7
+from time import localtime, strftime, time
 
 def count_nouns(txt):
     nouns = t.nouns(txt)
@@ -20,13 +21,13 @@ def count_nouns(txt):
     return all_contents
 
 def save_json(query, content):
-    from time import localtime, strftime, time
+
 
     data_dict = {
         "query": query,
         "item": content
     }
-    path = "../data/blog_data"
+    path = "../data/blog_data/before_month"
 
     tm = localtime(time())
     today = strftime("%Y-%m-%d", tm)
@@ -46,9 +47,16 @@ def save_json(query, content):
 
 if __name__ == '__main__':
     # Elasticsearch에서 데이터 불러오기
-    idx_name = "test"
+    query = "충청남도"
+    idx_name = "chungnam"
+    before_week = strftime("%Y%m%d", localtime(time() - 604800))
+    before_month = strftime("%Y%m%d", localtime(time() - 2592000))
+
+    # 검색 범위설정
+    doc = {"query": {"range": {"postdate": {"gt": before_month}}}}
+
     es = elasticsearch7.Elasticsearch(["http://localhost:9200"])
-    res = es.search(index=idx_name, scroll='10m', size=1000)
+    res = es.search(index=idx_name, scroll='10m', size=1000, body=doc)
 
     t = Twitter()
     items = ""
@@ -62,7 +70,6 @@ if __name__ == '__main__':
     print(all_contents)
 
     # json으로 저장
-    query = "곡성군"
     save_json(query, all_contents)
 
 
