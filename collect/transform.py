@@ -47,8 +47,8 @@ def save_json(query, content):
 
 if __name__ == '__main__':
     # Elasticsearch에서 데이터 불러오기
-    query = "충청남도"
-    idx_name = "chungnam"
+    query = "용산구"
+    idx_name = "yongsangu"
     before_week = strftime("%Y%m%d", localtime(time() - 604800))
     before_month = strftime("%Y%m%d", localtime(time() - 2592000))
 

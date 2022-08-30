@@ -81,7 +81,7 @@ def count_nouns(txt):
 
 
 if __name__ == '__main__':
-    query = "곡성"
+    query = "남해군"
     display = 100
     start = 1
 

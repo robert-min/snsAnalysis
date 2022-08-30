@@ -79,8 +79,8 @@ def push_elasticsearch(data, idx):
 
 
 if __name__ == '__main__':
-    query = "충청남도"
-    index_name = "chungnam"
+    query = "용산구"
+    index_name = "yongsangu"
     display = 100
     start = 1
 
