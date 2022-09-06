@@ -76,8 +76,8 @@ def readline(all_data):
 
 
 if __name__ == '__main__':
-    query = "용산구"
-    index_name = "yongsangu"
+    query = "의왕시"
+    index_name = "uiwangsi"
     display = 100
     start = 1
 
@@ -119,7 +119,6 @@ if __name__ == '__main__':
                     "_source": c
                 }
             )
-        break
 
     bulk(client, bulk_data)
     client.indices.refresh(index=index_name)

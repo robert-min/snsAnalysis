@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import json
 from konlpy.tag import Twitter
 from collections import Counter
@@ -15,7 +17,7 @@ def count_nouns(txt):
     max_count = 26
 
     # 가장 갯수가 많은 것은 query
-    for n, c in count.most_common(max_count)[1:]:
+    for n, c in count.most_common(max_count):
         all_contents[n] = c
 
     return all_contents
@@ -70,7 +72,7 @@ if __name__ == '__main__':
     print(all_contents)
 
     # json으로 저장
-    save_json(query, all_contents)
+    # save_json(query, all_contents)
 
 
 
